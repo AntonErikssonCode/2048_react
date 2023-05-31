@@ -1,9 +1,143 @@
 .App {
   text-align: center;
-  background-color: rgb(209, 209, 209);
-  width: 400px;
-  height: 500px;
+  background-color: rgb(66, 66, 66);
+  width: 416px;
+  height: 554px;
+  border-radius: 0.2rem;
+  padding: 8px;
+}
+
+.topSection {
+  height: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.topSection-1 {
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(31, 31, 31);
+  border-radius: 0.2rem;
+  color: white;
+}
+.topSection-1 h1 {
+  margin: 0;
+}
+
+.topSection-2 {
+  width: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
   border-radius: 0.2rem;
 }
 
+.topSection-3 {
+  width: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 0.2rem;
+}
+.topSection-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: rgb(43, 43, 43);
+  height: 70%;
+  width: 100%;
+  border-radius: 0.2rem;
+  color: white;
+}
 
+.scoreAndBestName {
+  margin: 0;
+}
+.scoreAndBestNum {
+  margin: 0;
+}
+.button {
+  height: 30%;
+  width: 100%;
+  border-radius: 0.2rem;
+  background-color: rgb(63, 180, 230);
+}
+
+h4 {
+  margin: 8px;
+}
+.bottomSection {
+  height: 416px;
+  width: 416px;
+  border-radius: 0.2rem;
+  background-color: rgb(43, 43, 43);
+  position: relative;
+}
+.bottomBackground {
+  background-color: rgb(8, 5, 5);
+  height: 416px;
+  width: 416px;
+  border-radius: 0.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  position: absolute;
+  top: 0;
+  
+ 
+}
+.backgroundTile{
+  background-color: rgb(8, 5, 5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.2rem;
+
+
+}
+.backgroundTileInner{
+  background-color: rgb(205, 205, 205);
+  width: 90%;
+  height: 90%;
+  border-radius: 0.2rem;
+
+
+}
+.bottomBoard{
+
+  width: 416px;
+  border-radius: 0.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  position: absolute;
+  top: 0;
+
+}
+
+.boardTile{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.2rem;
+  position: absolute;
+
+}
+.boardInnerTile{
+  background-color: rgb(225, 165, 45);
+  width: 90%;
+  height: 90%;
+  border-radius: 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+
+}
