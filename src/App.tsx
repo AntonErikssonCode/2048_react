@@ -5,7 +5,7 @@ import "./App.css";
 function App() {
   const [score, setScore] = useState(0);
   const [best, setBest] = useState(0);
-  const [tilesXY, setTilesXY] = useState(7);
+  const [tilesXY, setTilesXY] = useState(4);
   const [tileWidthHeight, setTileWidthHeight] = useState<number | undefined>();
   const bottomSectionRef = useRef<HTMLDivElement>(null);
   const [boardBackground, setBoardBackground] = useState<number[]>([]);
@@ -71,10 +71,27 @@ function App() {
               left: moveDistance * tilesXY * 2,
             }}
           >
+            
             <div className="boardInnerTile">
               <p className="value">2</p>
             </div>
           </div>
+
+          <div
+            className="boardTile"
+            style={{
+              width: tileWidthHeight,
+              height: tileWidthHeight,
+              top: moveDistance * tilesXY * 1,
+              left: moveDistance * tilesXY * 3,
+            }}
+          >
+            
+            <div className="boardInnerTile">
+              <p className="value">2</p>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
