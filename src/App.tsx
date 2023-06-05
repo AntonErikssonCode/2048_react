@@ -11,21 +11,23 @@ function App() {
   const [boardBackground, setBoardBackground] = useState<number[]>([]);
   const [moveDistance, setMoveDistance] = useState(0);
 
-  const states = [0, 0, 0, 0, 2, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0];
-  function setState() {
+  const states = [2, 0, 0, 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0];
+  function placeTiles() {
     return states.map((state, index) => {
-      const x = index; 
-      const y = index;
-      if (state !== 0) {
+      if (state > 0) {
+        const x = index % tilesXY;
+        const y = Math.floor(index / tilesXY);
 
+        console.log("X " + index + " : " + x);
+        console.log("Y " + index + " : " + y);
         return (
           <div
             className="boardTile"
             style={{
               width: tileWidthHeight,
               height: tileWidthHeight,
-              top: moveDistance * tilesXY * 2,
-              left: moveDistance * tilesXY * 2,
+              left: moveDistance * tilesXY * x,
+              top: moveDistance * tilesXY * y,
             }}
           >
             <div className="boardInnerTile">
@@ -36,7 +38,7 @@ function App() {
       }
     });
   }
-
+  const tiles = placeTiles();
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTilesXY(parseInt(event.target.value));
   };
@@ -93,33 +95,7 @@ function App() {
             ))}
           </div>
           <div className="bottomBoard">
-            <div
-              className="boardTile"
-              style={{
-                width: tileWidthHeight,
-                height: tileWidthHeight,
-                top: moveDistance * tilesXY * 2,
-                left: moveDistance * tilesXY * 2,
-              }}
-            >
-              <div className="boardInnerTile">
-                <p className="value">2</p>
-              </div>
-            </div>
-
-            <div
-              className="boardTile"
-              style={{
-                width: tileWidthHeight,
-                height: tileWidthHeight,
-                top: moveDistance * tilesXY * 1,
-                left: moveDistance * tilesXY * 3,
-              }}
-            >
-              <div className="boardInnerTile">
-                <p className="value">2</p>
-              </div>
-            </div>
+            {tiles}
           </div>
         </div>
       </div>
