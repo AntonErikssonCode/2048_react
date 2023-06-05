@@ -5,16 +5,42 @@ import "./App.css";
 function App() {
   const [score, setScore] = useState(0);
   const [best, setBest] = useState(0);
-  const [tilesXY, setTilesXY] = useState(10);
+  const [tilesXY, setTilesXY] = useState(4);
   const [tileWidthHeight, setTileWidthHeight] = useState<number | undefined>();
   const bottomSectionRef = useRef<HTMLDivElement>(null);
   const [boardBackground, setBoardBackground] = useState<number[]>([]);
   const [moveDistance, setMoveDistance] = useState(0);
-  const [sliderValue, setSliderValue] = useState(2);
+
+  const states = [0, 0, 0, 0, 2, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0];
+  function setState() {
+    return states.map((state, index) => {
+      const x = index; 
+      const y = index;
+      if (state !== 0) {
+
+        return (
+          <div
+            className="boardTile"
+            style={{
+              width: tileWidthHeight,
+              height: tileWidthHeight,
+              top: moveDistance * tilesXY * 2,
+              left: moveDistance * tilesXY * 2,
+            }}
+          >
+            <div className="boardInnerTile">
+              <p className="value">{state}</p>
+            </div>
+          </div>
+        );
+      }
+    });
+  }
 
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTilesXY(parseInt(event.target.value));
   };
+
   useEffect(() => {
     if (bottomSectionRef.current) {
       const width = bottomSectionRef.current.offsetWidth / tilesXY;
