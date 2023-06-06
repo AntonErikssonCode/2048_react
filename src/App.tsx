@@ -3,42 +3,26 @@ import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
 
 function App() {
-  const [score, setScore] = useState(0);
+  const bottomSectionRef = useRef<HTMLDivElement>(null);
+
+  // Scores
   const [best, setBest] = useState(0);
+  const [score, setScore] = useState(0);
+  const [prevScore, setPrevScore] = useState(0);
+
+  // Tiles
   const [tilesXY, setTilesXY] = useState(4);
   const [tileWidthHeight, setTileWidthHeight] = useState<number | undefined>();
-  const bottomSectionRef = useRef<HTMLDivElement>(null);
-  const [boardBackground, setBoardBackground] = useState<number[]>([]);
   const [moveDistance, setMoveDistance] = useState(0);
 
-  const states = [2, 0, 0, 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0];
-  function placeTiles() {
-    return states.map((state, index) => {
-      if (state > 0) {
-        const x = index % tilesXY;
-        const y = Math.floor(index / tilesXY);
+  // Board
+  const [tilesArray, setTilesArray] = useState<number[]>([]);
+  const [prevTilesArray, setPrevTilesArray] = useState<number[]>([]);
+  const [boardBackground, setBoardBackground] = useState<number[]>([]);
+  const [tilesElements, setTilesElements] = useState<(JSX.Element | null)[]>([]);
 
-        console.log("X " + index + " : " + x);
-        console.log("Y " + index + " : " + y);
-        return (
-          <div
-            className="boardTile"
-            style={{
-              width: tileWidthHeight,
-              height: tileWidthHeight,
-              left: moveDistance * tilesXY * x,
-              top: moveDistance * tilesXY * y,
-            }}
-          >
-            <div className="boardInnerTile">
-              <p className="value">{state}</p>
-            </div>
-          </div>
-        );
-      }
-    });
-  }
-  const tiles = placeTiles();
+
+  
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTilesXY(parseInt(event.target.value));
   };
@@ -83,6 +67,7 @@ function App() {
         </div>
         <h4>Join the number and get to the 2048 tile!</h4>
         <div className="bottomSection" ref={bottomSectionRef}>
+          {/* Spawn Background Tiles */}
           <div className="bottomBackground">
             {boardBackground.map((tile, index) => (
               <div
@@ -94,11 +79,11 @@ function App() {
               </div>
             ))}
           </div>
-          <div className="bottomBoard">
-            {tiles}
-          </div>
+          {/*  Spawn Tiles */}
+          <div className="bottomBoard">{tilesElements}</div>
         </div>
       </div>
+      {/*  Input Slider For Size Change */}
       <input
         type="range"
         min="2"
