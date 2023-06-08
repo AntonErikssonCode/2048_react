@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import "./App.css";
-
+import Tile from "./components/tile";
 function App() {
   const bottomSectionRef = useRef<HTMLDivElement>(null);
 
@@ -37,22 +37,34 @@ function App() {
     setTilesXY(parseInt(event.target.value));
   };
 
-  useEffect(() => {
-    // Arrow keys event listener
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
-        event.preventDefault();
-        spawnTile();
-      }
-    };
+  const handleKeyDown = (event: KeyboardEvent) => {
+    event.preventDefault();
 
+    if (
+      event.key === "ArrowUp" ||
+      event.key === "ArrowDown" ||
+      event.key === "ArrowLeft" ||
+      event.key === "ArrowRight"
+    ) {
+      spawnTile();
+      moveLeft()
+    }
+  };
+
+  function moveLeft(){
+    for (let y = 1; y < tilesArray.length; y++) {
+      for (let x = 0; x < tilesArray[y].length; x++) {
+        console.dir(tilesArray[y][x])
+      }}
+  }
+
+  useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
-  
+  }, [tilesArray, tilesXY]);
 
   useEffect(() => {
     setGameReady(false);
@@ -72,11 +84,11 @@ function App() {
       spawnTile();
       spawnTile();
     }
-    
   }, [gameReady]);
 
   useEffect(() => {
     console.dir(tilesArray);
+    placeTiles();
   }, [tilesArray]);
 
   // Functions
@@ -100,7 +112,36 @@ function App() {
 
     setTilesArray(result);
     setGameReady(true);
-   
+  }
+
+  function placeTiles() {
+    const tiles: (JSX.Element | null)[] = [];
+
+    // Iterate through the tilesArray
+    for (let y = 0; y < tilesArray.length; y++) {
+      for (let x = 0; x < tilesArray[y].length; x++) {
+        const value = tilesArray[y][x];
+
+        // Check if the value is greater than 0
+        if (value > 0) {
+          // Create an element for the tile and add it to the elements array
+          const tile = (
+            <Tile
+              value={value}
+              tileWidthHeight={width}
+              tilesXY={tilesXY}
+              moveDistance={moveDistance}
+              x={x}
+              y={y}
+            />
+          );
+          tiles.push(tile);
+        }
+      }
+    }
+
+    // Update the state with the generated elements
+    setTilesElements(tiles);
   }
 
   function getRandomNumber(): number {
@@ -199,7 +240,7 @@ function App() {
             ))}
           </div>
           {/*  Spawn Tiles */}
-          {/*   <div className="bottomBoard">{tilesElements}</div> */}
+          <div className="bottomBoard">{tilesElements}</div>
         </div>
       </div>
       {/*  Input Slider For Size Change */}
