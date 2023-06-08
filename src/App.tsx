@@ -47,15 +47,34 @@ function App() {
       event.key === "ArrowRight"
     ) {
       spawnTile();
-      moveLeft()
+      moveLeft();
     }
   };
 
-  function moveLeft(){
-    for (let y = 1; y < tilesArray.length; y++) {
-      for (let x = 0; x < tilesArray[y].length; x++) {
-        console.dir(tilesArray[y][x])
-      }}
+  function moveLeft() {
+    const newTilesArray = tilesArray;
+    console.table(newTilesArray);
+    for (let row = 0; row < newTilesArray.length; row++) {
+      for (let column = 0; column < newTilesArray[row].length; column++) {
+        /* console.dir(
+          "column: " +
+            column +
+            " " +
+            "row: " +
+            row +
+            " " +
+            "value: " +
+            newTilesArray[row][column]
+        ); */
+        if (column > 0) {
+          let value = newTilesArray[row][column];
+          let valueToTheLeft = newTilesArray[row][column - 1];
+          if (value == valueToTheLeft) {
+          }
+        }
+      }
+      console.dir("_____________");
+    }
   }
 
   useEffect(() => {
