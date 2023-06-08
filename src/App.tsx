@@ -38,6 +38,23 @@ function App() {
   };
 
   useEffect(() => {
+    // Arrow keys event listener
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        spawnTile();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+  
+
+  useEffect(() => {
     setGameReady(false);
     if (bottomSectionRef.current) {
       setWidth(bottomSectionRef.current.offsetWidth / tilesXY);
