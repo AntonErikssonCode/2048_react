@@ -14,40 +14,52 @@ function App() {
   const [tilesXY, setTilesXY] = useState(4);
   const [tileWidthHeight, setTileWidthHeight] = useState<number | undefined>();
   const [moveDistance, setMoveDistance] = useState(0);
+  const [width, setWidth] = useState(104);
 
   // Board
-  const [tilesArray, setTilesArray] = useState<number[][]>([]);
+  const [tilesArray, setTilesArray] = useState<number[][]>([
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ]);
   const [prevTilesArray, setPrevTilesArray] = useState<number[]>([]);
   const [boardBackground, setBoardBackground] = useState<number[]>([]);
   const [tilesElements, setTilesElements] = useState<(JSX.Element | null)[]>(
     []
   );
 
+  // Game State
+  const [gameReady, setGameReady] = useState(false);
+
   // Handlers
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTilesXY(parseInt(event.target.value));
   };
 
-  // Use Effects
   useEffect(() => {
+    setGameReady(false);
     if (bottomSectionRef.current) {
-      const width = bottomSectionRef.current.offsetWidth / tilesXY;
-
-      setMoveDistance(width / tilesXY);
-
-      setTileWidthHeight(width);
-      resetScore();
-      initBoard();
-      
-     
+      setWidth(bottomSectionRef.current.offsetWidth / tilesXY);
     }
   }, [tilesXY]);
-  
 
   useEffect(() => {
-    console.log(tilesArray)
+    setMoveDistance(width / tilesXY);
+    setTileWidthHeight(width);
+    initBoard();
+  }, [width]);
 
+  useEffect(() => {
+    if (gameReady) {
+      spawnTile();
+      spawnTile();
+    }
     
+  }, [gameReady]);
+
+  useEffect(() => {
+    console.dir(tilesArray);
   }, [tilesArray]);
 
   // Functions
@@ -58,23 +70,20 @@ function App() {
   function generateArray() {
     const nTile = tilesXY * tilesXY;
     const result = [];
-
-    // Calculate the size of each inner array
     const innerSize = Math.sqrt(nTile);
 
-    // Iterate and create inner arrays
     for (let i = 0; i < innerSize; i++) {
       const innerArray = [];
 
-      // Fill each inner array with elements
       for (let j = 0; j < innerSize; j++) {
         innerArray.push(0);
       }
-
       result.push(innerArray);
     }
 
     setTilesArray(result);
+    setGameReady(true);
+   
   }
 
   function getRandomNumber(): number {
@@ -84,9 +93,10 @@ function App() {
   }
 
   function spawnTile() {
-    if (tilesArray && tilesArray.length > 0) {
+    console.dir(tilesArray.length);
+    if (tilesArray && tilesArray.length == tilesXY) {
       const emptyPositions: { x: number; y: number }[] = [];
-  
+
       // Find empty positions in the tilesArray
       for (let y = 0; y < tilesXY; y++) {
         for (let x = 0; x < tilesXY; x++) {
@@ -95,38 +105,45 @@ function App() {
           }
         }
       }
-  
+
+      // Find empty positions in the tilesArray
+      for (let y = 0; y < tilesXY; y++) {
+        for (let x = 0; x < tilesXY; x++) {
+          if (tilesArray[y][x] === 0) {
+            emptyPositions.push({ x, y });
+          }
+        }
+      }
+
       if (emptyPositions.length === 0) {
         console.info("No unique positions available");
         return;
       }
-  
+
       // Choose a random empty position
       const randomIndex = Math.floor(Math.random() * emptyPositions.length);
       const { x, y } = emptyPositions[randomIndex];
-  
+
       // Generate a random number (2 or 4)
       const number = getRandomNumber();
-  
+
       // Create a copy of the tilesArray and update the value at the chosen position
       const updatedTilesArray = [...tilesArray];
       updatedTilesArray[y][x] = number;
-  
+
       // Update the state with the modified tilesArray
       setTilesArray(updatedTilesArray);
       console.log("Spawned tile");
     }
   }
-  
+
   // Init
   function initBoard() {
     const newBoardBackground = Array(tilesXY * tilesXY).fill(0);
     setBoardBackground(newBoardBackground);
     generateArray();
-    spawnTile();
-  
+    resetScore();
   }
-  
 
   return (
     <div>
@@ -165,7 +182,7 @@ function App() {
             ))}
           </div>
           {/*  Spawn Tiles */}
-          <div className="bottomBoard">{tilesElements}</div>
+          {/*   <div className="bottomBoard">{tilesElements}</div> */}
         </div>
       </div>
       {/*  Input Slider For Size Change */}
