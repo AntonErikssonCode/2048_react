@@ -46,9 +46,17 @@ function App() {
     setTilesXY(parseInt(event.target.value));
   };
 
+  
+  const handleNewGame = () => {
+    initBoard();
+    spawnTile();
+    spawnTile();
+
+  }
+
   const handleKeyDown = (event: KeyboardEvent) => {
     event.preventDefault();
-
+    setPrevTilesArray(tilesArray);
     switch (event.key) {
       case "ArrowUp":
         moveUp();
@@ -74,6 +82,7 @@ function App() {
   };
 
   function moveLeft() {
+    let newScore = score; 
     let newTilesArray = tilesArray.slice();
     for (let index = 0; index < tilesXY - 1; index++) {
       for (let row = 0; row < newTilesArray.length; row++) {
@@ -87,6 +96,7 @@ function App() {
               newTilesArray[row][column - 1] = value + value;
               newTilesArray[row][column] = 0;
               numberOfMoves++;
+              newScore += value + value;
             } else if (valueToTheLeft == 0) {
               newTilesArray[row][column - 1] = value;
               newTilesArray[row][column] = 0;
@@ -97,11 +107,13 @@ function App() {
       }
     }
     setMove("left");
-    setPrevTilesArray(tilesArray);
+    
     setTilesArray(newTilesArray);
+    setScore(newScore);
   }
 
   function moveRight() {
+    let newScore = score; 
     let newTilesArray = tilesArray.slice();
 
     // Loop through all tiles mutiple times
@@ -121,6 +133,7 @@ function App() {
               newTilesArray[row][column + 1] = value + value;
               newTilesArray[row][column] = 0;
               numberOfMoves++;
+              newScore += value + value;
             } else if (valueToTheLeft == 0) {
               newTilesArray[row][column + 1] = value;
               newTilesArray[row][column] = 0;
@@ -131,10 +144,11 @@ function App() {
       }
     }
     setMove("left");
-    setPrevTilesArray(tilesArray);
     setTilesArray(newTilesArray);
+    setScore(newScore);
   }
   function moveUp() {
+    let newScore = score; 
     let newTilesArray = tilesArray.slice();
   
     for (let index = 0; index < tilesXY - 1; index++) {
@@ -150,6 +164,7 @@ function App() {
               newTilesArray[row - 1][column] = value + value;
               newTilesArray[row][column] = 0;
               numberOfMoves++;
+              newScore += value + value;
             } else if (valueAbove === 0) {
               newTilesArray[row - 1][column] = value;
               newTilesArray[row][column] = 0;
@@ -161,11 +176,13 @@ function App() {
     }
   
     setMove("up");
-    setPrevTilesArray(tilesArray);
+    
     setTilesArray(newTilesArray);
+    setScore(newScore);
   }
   
   function moveDown() {
+    let newScore = score; 
     let newTilesArray = tilesArray.slice();
   
     for (let index = 0; index < tilesXY - 1; index++) {
@@ -181,6 +198,7 @@ function App() {
               newTilesArray[row + 1][column] = value + value;
               newTilesArray[row][column] = 0;
               numberOfMoves++;
+              newScore += value + value;
             } else if (valueBelow === 0) {
               newTilesArray[row + 1][column] = value;
               newTilesArray[row][column] = 0;
@@ -192,15 +210,20 @@ function App() {
     }
   
     setMove("down");
-    setPrevTilesArray(tilesArray);
     setTilesArray(newTilesArray);
+    setScore(newScore);
   }
   useEffect(() => {
+    console.table("tilesArray");
+    console.table(tilesArray);
+    console.table("prevTilesArray");
+    console.table(prevTilesArray);
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
+   
   }, [tilesArray, tilesXY]);
 
   useEffect(() => {
@@ -223,7 +246,11 @@ function App() {
     }
   }, [gameReady]);
 
-  useEffect(() => {}, [tilesArray]);
+  useEffect(() => {
+    placeTiles();
+
+    
+  }, [tilesArray]);
 
   // Functions
   function resetScore() {
@@ -355,7 +382,7 @@ function App() {
               <h2 className="scoreAndBestName">SCORE</h2>
               <h3 className="scoreAndBestNum">{score}</h3>
             </div>
-            <button className="button">New</button>
+            <button className="button" onClick={handleNewGame}>New</button>
           </div>
           <div className="topSection-3">
             <div className="topSection-display">

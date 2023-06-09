@@ -28,11 +28,18 @@ const colors: { [key: string]: string } = {
 };
 
 function Tile(props: Props) {
+  const [shrink, setShrink] = useState(false);
+
+  useEffect(() => {
+    // Trigger the shrinking effect once the component is mounted
+    setShrink(true);
+  }, []);
+
 
   if (props.value != 0) {
     return (
       <div
-        className="boardTile"
+        className={`boardTile${shrink ? " shrink" : ""}`}
         style={{
           width: props.tileWidthHeight,
           height: props.tileWidthHeight,

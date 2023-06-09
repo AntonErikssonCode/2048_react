@@ -23,5 +23,20 @@
   
 }
 .boardTile{
-  transition: all 1s ease-in;
+  /* transition: all 1s ease-in; */
+}
+@keyframes shrinkAnimation {
+  0% {
+    transform: scale(1); /* Initial size */
+  }
+  50% {
+    transform: scale(1.1); /* Shrink to 90% */
+  }
+  100% {
+    transform: scale(1); /* Return to original size */
+  }
+}
+
+.boardTile.shrink {
+  animation: shrinkAnimation 0.3s ease-in-out;
 }
