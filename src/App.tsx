@@ -47,7 +47,9 @@ function App() {
       event.key === "ArrowRight"
     ) {
       spawnTile();
-      moveLeft();
+      for (let index = 0; index < tilesXY - 1; index++) {
+        moveLeft();
+      }
     }
   };
 
@@ -56,24 +58,19 @@ function App() {
     console.table(newTilesArray);
     for (let row = 0; row < newTilesArray.length; row++) {
       for (let column = 0; column < newTilesArray[row].length; column++) {
-        /* console.dir(
-          "column: " +
-            column +
-            " " +
-            "row: " +
-            row +
-            " " +
-            "value: " +
-            newTilesArray[row][column]
-        ); */
         if (column > 0) {
           let value = newTilesArray[row][column];
           let valueToTheLeft = newTilesArray[row][column - 1];
-          if (value == valueToTheLeft) {
+          if (valueToTheLeft == value) {
+            newTilesArray[row][column - 1] = value + value;
+            newTilesArray[row][column] = 0;
+          }
+          if (valueToTheLeft == 0) {
+            newTilesArray[row][column - 1] = value;
+            newTilesArray[row][column] = 0;
           }
         }
       }
-      console.dir("_____________");
     }
   }
 
@@ -145,14 +142,16 @@ function App() {
         if (value > 0) {
           // Create an element for the tile and add it to the elements array
           const tile = (
-            <Tile
-              value={value}
-              tileWidthHeight={width}
-              tilesXY={tilesXY}
-              moveDistance={moveDistance}
-              x={x}
-              y={y}
-            />
+            <div key={y + ";" + x}>
+              <Tile
+                value={value}
+                tileWidthHeight={width}
+                tilesXY={tilesXY}
+                moveDistance={moveDistance}
+                x={x}
+                y={y}
+              />
+            </div>
           );
           tiles.push(tile);
         }
