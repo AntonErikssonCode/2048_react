@@ -51,10 +51,12 @@ function App() {
 
     switch (event.key) {
       case "ArrowUp":
-        // Action for ArrowUp key
+        moveUp();
+        spawnTile();
         break;
       case "ArrowDown":
-        // Action for ArrowDown key
+        moveDown();
+        spawnTile();
         break;
       case "ArrowLeft":
         moveLeft();
@@ -68,7 +70,7 @@ function App() {
         // Handle other cases if needed
         break;
     }
-    console.table(tilesArray);
+  
   };
 
   function moveLeft() {
@@ -108,8 +110,7 @@ function App() {
       for (let row = 0; row < newTilesArray.length; row++) {
         // Loop thorugh columns
         for (let column = tilesXY; column >= 0; column--) {
-          console.dir("right");
-          console.dir(row + " " + column);
+       
           let value = newTilesArray[row][column];
           let valueToTheLeft = newTilesArray[row][column + 1];
           const key = row + ":" + column;
@@ -133,7 +134,67 @@ function App() {
     setPrevTilesArray(tilesArray);
     setTilesArray(newTilesArray);
   }
-
+  function moveUp() {
+    let newTilesArray = tilesArray.slice();
+  
+    for (let index = 0; index < tilesXY - 1; index++) {
+      for (let column = 0; column < newTilesArray.length; column++) {
+        for (let row = 1; row < newTilesArray[column].length; row++) {
+          let value = newTilesArray[row][column];
+          let valueAbove = newTilesArray[row - 1][column];
+          const key = row + ":" + column;
+          let numberOfMoves = 0;
+  
+          if (row > 0) {
+            if (valueAbove === value && value !== 0) {
+              newTilesArray[row - 1][column] = value + value;
+              newTilesArray[row][column] = 0;
+              numberOfMoves++;
+            } else if (valueAbove === 0) {
+              newTilesArray[row - 1][column] = value;
+              newTilesArray[row][column] = 0;
+              numberOfMoves++;
+            }
+          }
+        }
+      }
+    }
+  
+    setMove("up");
+    setPrevTilesArray(tilesArray);
+    setTilesArray(newTilesArray);
+  }
+  
+  function moveDown() {
+    let newTilesArray = tilesArray.slice();
+  
+    for (let index = 0; index < tilesXY - 1; index++) {
+      for (let column = 0; column < newTilesArray.length; column++) {
+        for (let row = tilesXY - 2; row >= 0; row--) {
+          let value = newTilesArray[row][column];
+          let valueBelow = newTilesArray[row + 1][column];
+          const key = row + ":" + column;
+          let numberOfMoves = 0;
+  
+          if (row < tilesXY - 1) {
+            if (valueBelow === value && value !== 0) {
+              newTilesArray[row + 1][column] = value + value;
+              newTilesArray[row][column] = 0;
+              numberOfMoves++;
+            } else if (valueBelow === 0) {
+              newTilesArray[row + 1][column] = value;
+              newTilesArray[row][column] = 0;
+              numberOfMoves++;
+            }
+          }
+        }
+      }
+    }
+  
+    setMove("down");
+    setPrevTilesArray(tilesArray);
+    setTilesArray(newTilesArray);
+  }
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
 
