@@ -22,3 +22,6 @@
 .value{
   
 }
+.boardTile{
+  transition: all 1s ease-in;
+}

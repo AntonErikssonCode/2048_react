@@ -127,7 +127,9 @@ h4 {
   top: 0;
 
 }
-
+.bottomBoard {
+  /* other styles */
+}
 .boardTile{
   display: flex;
   justify-content: center;

@@ -4,6 +4,7 @@ import "./App.css";
 import Tile from "./components/tile";
 function App() {
   const bottomSectionRef = useRef<HTMLDivElement>(null);
+  const tileRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Scores
   const [best, setBest] = useState(0);
@@ -15,7 +16,7 @@ function App() {
   const [tileWidthHeight, setTileWidthHeight] = useState<number | undefined>();
   const [moveDistance, setMoveDistance] = useState(0);
   const [width, setWidth] = useState(104);
-
+  const [move, setMove] = useState("none");
   // Board
   const [tilesArray, setTilesArray] = useState<number[][]>([
     [0, 0, 0, 0],
@@ -23,11 +24,19 @@ function App() {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ]);
-  const [prevTilesArray, setPrevTilesArray] = useState<number[]>([]);
+  const [prevTilesArray, setPrevTilesArray] = useState<number[][]>([
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ]);
   const [boardBackground, setBoardBackground] = useState<number[]>([]);
   const [tilesElements, setTilesElements] = useState<(JSX.Element | null)[]>(
     []
   );
+  const [animateTiles, setAnimateTiles] = useState<
+    { translate: string; x: number; y: number; value: number }[]
+  >([]);
 
   // Game State
   const [gameReady, setGameReady] = useState(false);
@@ -40,38 +49,89 @@ function App() {
   const handleKeyDown = (event: KeyboardEvent) => {
     event.preventDefault();
 
-    if (
-      event.key === "ArrowUp" ||
-      event.key === "ArrowDown" ||
-      event.key === "ArrowLeft" ||
-      event.key === "ArrowRight"
-    ) {
-      spawnTile();
-      for (let index = 0; index < tilesXY - 1; index++) {
+    switch (event.key) {
+      case "ArrowUp":
+        // Action for ArrowUp key
+        break;
+      case "ArrowDown":
+        // Action for ArrowDown key
+        break;
+      case "ArrowLeft":
         moveLeft();
-      }
+        spawnTile();
+        break;
+      case "ArrowRight":
+        moveRight();
+        spawnTile();
+        break;
+      default:
+        // Handle other cases if needed
+        break;
     }
+    console.table(tilesArray);
   };
 
   function moveLeft() {
-    const newTilesArray = tilesArray;
-    console.table(newTilesArray);
-    for (let row = 0; row < newTilesArray.length; row++) {
-      for (let column = 0; column < newTilesArray[row].length; column++) {
-        if (column > 0) {
+    let newTilesArray = tilesArray.slice();
+    for (let index = 0; index < tilesXY - 1; index++) {
+      for (let row = 0; row < newTilesArray.length; row++) {
+        for (let column = 0; column < newTilesArray[row].length; column++) {
           let value = newTilesArray[row][column];
           let valueToTheLeft = newTilesArray[row][column - 1];
-          if (valueToTheLeft == value) {
-            newTilesArray[row][column - 1] = value + value;
-            newTilesArray[row][column] = 0;
-          }
-          if (valueToTheLeft == 0) {
-            newTilesArray[row][column - 1] = value;
-            newTilesArray[row][column] = 0;
+          const key = row + ":" + column;
+          let numberOfMoves = 0;
+          if (column > 0) {
+            if (valueToTheLeft == value && value != 0) {
+              newTilesArray[row][column - 1] = value + value;
+              newTilesArray[row][column] = 0;
+              numberOfMoves++;
+            } else if (valueToTheLeft == 0) {
+              newTilesArray[row][column - 1] = value;
+              newTilesArray[row][column] = 0;
+              numberOfMoves++;
+            }
           }
         }
       }
     }
+    setMove("left");
+    setPrevTilesArray(tilesArray);
+    setTilesArray(newTilesArray);
+  }
+
+  function moveRight() {
+    let newTilesArray = tilesArray.slice();
+
+    // Loop through all tiles mutiple times
+    for (let index = 0; index < tilesXY - 1; index++) {
+      // Loop thorugh rows
+      for (let row = 0; row < newTilesArray.length; row++) {
+        // Loop thorugh columns
+        for (let column = tilesXY; column >= 0; column--) {
+          console.dir("right");
+          console.dir(row + " " + column);
+          let value = newTilesArray[row][column];
+          let valueToTheLeft = newTilesArray[row][column + 1];
+          const key = row + ":" + column;
+          let numberOfMoves = 0;
+
+          if (column < tilesXY) {
+            if (valueToTheLeft == value && value != 0) {
+              newTilesArray[row][column + 1] = value + value;
+              newTilesArray[row][column] = 0;
+              numberOfMoves++;
+            } else if (valueToTheLeft == 0) {
+              newTilesArray[row][column + 1] = value;
+              newTilesArray[row][column] = 0;
+              numberOfMoves++;
+            }
+          }
+        }
+      }
+    }
+    setMove("left");
+    setPrevTilesArray(tilesArray);
+    setTilesArray(newTilesArray);
   }
 
   useEffect(() => {
@@ -102,10 +162,7 @@ function App() {
     }
   }, [gameReady]);
 
-  useEffect(() => {
-    console.dir(tilesArray);
-    placeTiles();
-  }, [tilesArray]);
+  useEffect(() => {}, [tilesArray]);
 
   // Functions
   function resetScore() {
@@ -127,6 +184,7 @@ function App() {
     }
 
     setTilesArray(result);
+    setPrevTilesArray(result);
     setGameReady(true);
   }
 
@@ -142,7 +200,10 @@ function App() {
         if (value > 0) {
           // Create an element for the tile and add it to the elements array
           const tile = (
-            <div key={y + ";" + x}>
+            <div
+              key={y + ":" + x}
+              ref={(ref) => (tileRefs.current[y * tilesXY + x] = ref)}
+            >
               <Tile
                 value={value}
                 tileWidthHeight={width}
@@ -169,7 +230,6 @@ function App() {
   }
 
   function spawnTile() {
-    console.dir(tilesArray.length);
     if (tilesArray && tilesArray.length == tilesXY) {
       const emptyPositions: { x: number; y: number }[] = [];
 
@@ -211,6 +271,7 @@ function App() {
       setTilesArray(updatedTilesArray);
       console.log("Spawned tile");
     }
+    placeTiles();
   }
 
   // Init
