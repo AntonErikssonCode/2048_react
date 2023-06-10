@@ -46,17 +46,28 @@ function App() {
     setTilesXY(parseInt(event.target.value));
   };
 
-  
   const handleNewGame = () => {
+   
+    console.dir("handle game clicked")
+    
     initBoard();
-    spawnTile();
-    spawnTile();
+    
+    
+     
+  };
 
-  }
+  const isKeyPressedRef = useRef(false);
 
   const handleKeyDown = (event: KeyboardEvent) => {
     event.preventDefault();
+
+    if (isKeyPressedRef.current) {
+      return;
+    }
+
+    isKeyPressedRef.current = true;
     setPrevTilesArray(tilesArray);
+
     switch (event.key) {
       case "ArrowUp":
         moveUp();
@@ -78,11 +89,24 @@ function App() {
         // Handle other cases if needed
         break;
     }
-  
   };
 
+  const handleKeyUp = () => {
+    isKeyPressedRef.current = false;
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [tilesArray]);
+
   function moveLeft() {
-    let newScore = score; 
+    let newScore = score;
     let newTilesArray = tilesArray.slice();
     for (let index = 0; index < tilesXY - 1; index++) {
       for (let row = 0; row < newTilesArray.length; row++) {
@@ -107,13 +131,13 @@ function App() {
       }
     }
     setMove("left");
-    
+
     setTilesArray(newTilesArray);
     setScore(newScore);
   }
 
   function moveRight() {
-    let newScore = score; 
+    let newScore = score;
     let newTilesArray = tilesArray.slice();
 
     // Loop through all tiles mutiple times
@@ -122,7 +146,6 @@ function App() {
       for (let row = 0; row < newTilesArray.length; row++) {
         // Loop thorugh columns
         for (let column = tilesXY; column >= 0; column--) {
-       
           let value = newTilesArray[row][column];
           let valueToTheLeft = newTilesArray[row][column + 1];
           const key = row + ":" + column;
@@ -143,14 +166,14 @@ function App() {
         }
       }
     }
-    setMove("left");
+    setMove("right");
     setTilesArray(newTilesArray);
     setScore(newScore);
   }
   function moveUp() {
-    let newScore = score; 
+    let newScore = score;
     let newTilesArray = tilesArray.slice();
-  
+
     for (let index = 0; index < tilesXY - 1; index++) {
       for (let column = 0; column < newTilesArray.length; column++) {
         for (let row = 1; row < newTilesArray[column].length; row++) {
@@ -158,7 +181,7 @@ function App() {
           let valueAbove = newTilesArray[row - 1][column];
           const key = row + ":" + column;
           let numberOfMoves = 0;
-  
+
           if (row > 0) {
             if (valueAbove === value && value !== 0) {
               newTilesArray[row - 1][column] = value + value;
@@ -174,17 +197,17 @@ function App() {
         }
       }
     }
-  
+
     setMove("up");
-    
+
     setTilesArray(newTilesArray);
     setScore(newScore);
   }
-  
+
   function moveDown() {
-    let newScore = score; 
+    let newScore = score;
     let newTilesArray = tilesArray.slice();
-  
+
     for (let index = 0; index < tilesXY - 1; index++) {
       for (let column = 0; column < newTilesArray.length; column++) {
         for (let row = tilesXY - 2; row >= 0; row--) {
@@ -192,7 +215,7 @@ function App() {
           let valueBelow = newTilesArray[row + 1][column];
           const key = row + ":" + column;
           let numberOfMoves = 0;
-  
+
           if (row < tilesXY - 1) {
             if (valueBelow === value && value !== 0) {
               newTilesArray[row + 1][column] = value + value;
@@ -208,22 +231,21 @@ function App() {
         }
       }
     }
-  
+
     setMove("down");
     setTilesArray(newTilesArray);
     setScore(newScore);
   }
   useEffect(() => {
-    console.table("tilesArray");
+  /*   console.table("tilesArray");
     console.table(tilesArray);
     console.table("prevTilesArray");
-    console.table(prevTilesArray);
+    console.table(prevTilesArray); */
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-   
   }, [tilesArray, tilesXY]);
 
   useEffect(() => {
@@ -240,16 +262,17 @@ function App() {
   }, [width]);
 
   useEffect(() => {
+    console.dir("game ready: "+gameReady)
     if (gameReady) {
       spawnTile();
       spawnTile();
+   
     }
+      
   }, [gameReady]);
 
   useEffect(() => {
     placeTiles();
-
-    
   }, [tilesArray]);
 
   // Functions
@@ -274,6 +297,7 @@ function App() {
     setTilesArray(result);
     setPrevTilesArray(result);
     setGameReady(true);
+   
   }
 
   function placeTiles() {
@@ -364,6 +388,7 @@ function App() {
 
   // Init
   function initBoard() {
+    setGameReady(false);
     const newBoardBackground = Array(tilesXY * tilesXY).fill(0);
     setBoardBackground(newBoardBackground);
     generateArray();
@@ -382,12 +407,14 @@ function App() {
               <h2 className="scoreAndBestName">SCORE</h2>
               <h3 className="scoreAndBestNum">{score}</h3>
             </div>
-            <button className="button" onClick={handleNewGame}>New</button>
+            <button className="button" onClick={handleNewGame}>
+              New
+            </button>
           </div>
           <div className="topSection-3">
             <div className="topSection-display">
-              <h2 className="scoreAndBestName">BEST</h2>
-              <h3 className="scoreAndBestNum">{best}</h3>
+              <h2 className="scoreAndBestName">SIZE</h2>
+              <h3 className="scoreAndBestNum">{tilesXY + "*"+tilesXY}</h3>
             </div>
             <button className="button">UNDO</button>
           </div>
@@ -419,6 +446,8 @@ function App() {
         className="slider"
         onChange={handleSliderChange}
       />
+      <p style={{textAlign:"center"}}>Use the arrow keys to controll the game. Have fun!</p>
+      <p style={{textAlign:"center"}}>You can also change the size of the board with the slider</p>
     </div>
   );
 }

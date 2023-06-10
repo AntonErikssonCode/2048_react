@@ -5,6 +5,7 @@
   height: 554px;
   border-radius: 0.2rem;
   padding: 8px;
+  user-select: none;
 }
 
 .topSection {
