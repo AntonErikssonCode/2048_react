@@ -4,13 +4,13 @@ import "./App.css";
 import Tile from "./components/tile";
 import Bonus from "./components/bonus";
 function App() {
+  // Refs
   const bottomSectionRef = useRef<HTMLDivElement>(null);
   const tileRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const isKeyPressedRef = useRef(false);
 
   // Scores
-
   const [score, setScore] = useState(0);
-
   const [bonus, setBonus] = useState(0);
 
   // Tiles
@@ -37,25 +37,28 @@ function App() {
   const [tilesElements, setTilesElements] = useState<(JSX.Element | null)[]>(
     []
   );
-  const [animateTiles, setAnimateTiles] = useState<
-    { translate: string; x: number; y: number; value: number }[]
-  >([]);
 
   // Game State
   const [gameReady, setGameReady] = useState(false);
   const [undoAvailable, setUndoAvailable] = useState(true);
 
+
   // Handlers
+  
+
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTilesXY(parseInt(event.target.value));
   };
 
   const handleNewGame = () => {
-    console.dir("handle game clicked");
 
-    initBoard();
-   
+    if (tilesXY == 4) {
+      setTilesXY(5);
+    } else {
+      setTilesXY(4);
+    }
   };
+
   const undoMove = () => {
     if (undoAvailable) {
       setTilesArray(prevTilesArray);
@@ -64,8 +67,6 @@ function App() {
       setUndoAvailable(false);
     }
   };
-
-  const isKeyPressedRef = useRef(false);
 
   const handleKeyDown = (event: KeyboardEvent) => {
     event.preventDefault();
@@ -423,10 +424,7 @@ function App() {
 
   // Init
   function initBoard() {
-    if (gameReady) {
-      setGameReady(false);
-    }
-
+    console.log("initboard game is ready: " + gameReady);
     const newBoardBackground = Array(tilesXY * tilesXY).fill(0);
     setBoardBackground(newBoardBackground);
     generateArray();
@@ -437,6 +435,7 @@ function App() {
   return (
     <div>
       <div className="App">
+   
         <div className="topSection">
           <div className="topSection-1">
             <h1 className="title">2048</h1>
