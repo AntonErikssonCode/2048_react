@@ -488,7 +488,7 @@ function App() {
         onChange={handleSliderChange}
       />
       <p style={{ textAlign: "center" }}>
-        Use the arrow keys to controll the game. Have fun!
+        Use the arrow keys to control the game. Have fun!
       </p>
       <p style={{ textAlign: "center" }}>
         You can also change the size of the board with the slider
