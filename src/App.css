@@ -66,6 +66,25 @@
 .scoreAndBestNum {
   margin: 0;
 }
+
+
+
+@keyframes shrinkAnimation {
+  0% {
+    transform: scale(1); /* Initial size */
+  }
+  50% {
+    transform: scale(1.1); /* Shrink to 90% */
+  }
+  100% {
+    transform: scale(1); /* Return to original size */
+  }
+}
+
+.boardTile.shrink {
+  animation: shrinkAnimation 0.3s ease-in-out;
+}
+
 .button {
   height: 30%;
   width: 100%;
@@ -77,7 +96,7 @@ h4 {
   margin: 8px;
   color: white;
 }
-.slider{
+.slider {
   width: 90%;
   margin-left: 5%;
   margin-top: 1rem;
@@ -98,48 +117,39 @@ h4 {
   flex-wrap: wrap;
   position: absolute;
   top: 0;
-  
- 
 }
-.backgroundTile{
-  background-color: rgb(8, 5, 5); 
+.backgroundTile {
+  background-color: rgb(8, 5, 5);
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 0.2rem;
-
-
 }
-.backgroundTileInner{
+.backgroundTileInner {
   background-color: rgb(205, 205, 205);
   width: 90%;
   height: 90%;
   border-radius: 0.2rem;
-
-
 }
-.bottomBoard{
-
+.bottomBoard {
   width: 416px;
   border-radius: 0.2rem;
   display: flex;
   flex-wrap: wrap;
   position: absolute;
   top: 0;
-
 }
 .bottomBoard {
   /* other styles */
 }
-.boardTile{
+.boardTile {
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 0.2rem;
   position: absolute;
-
 }
-.boardInnerTile{
+.boardInnerTile {
   background-color: rgb(225, 165, 45);
   width: 90%;
   height: 90%;
@@ -148,5 +158,4 @@ h4 {
   justify-content: center;
   align-items: center;
   font-size: 2rem;
-
 }

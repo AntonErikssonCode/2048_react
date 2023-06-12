@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 
 import "./App.css";
 import Tile from "./components/tile";
+import Bonus from "./components/bonus";
 function App() {
   const bottomSectionRef = useRef<HTMLDivElement>(null);
   const tileRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -10,6 +11,7 @@ function App() {
   const [best, setBest] = useState(0);
   const [score, setScore] = useState(0);
   const [prevScore, setPrevScore] = useState(0);
+  const [bonus, setBonus] = useState(0);
 
   // Tiles
   const [tilesXY, setTilesXY] = useState(4);
@@ -47,13 +49,9 @@ function App() {
   };
 
   const handleNewGame = () => {
-   
-    console.dir("handle game clicked")
-    
+    console.dir("handle game clicked");
+
     initBoard();
-    
-    
-     
   };
 
   const isKeyPressedRef = useRef(false);
@@ -108,6 +106,7 @@ function App() {
   function moveLeft() {
     let newScore = score;
     let newTilesArray = tilesArray.slice();
+    let bonus = 0;
     for (let index = 0; index < tilesXY - 1; index++) {
       for (let row = 0; row < newTilesArray.length; row++) {
         for (let column = 0; column < newTilesArray[row].length; column++) {
@@ -121,6 +120,7 @@ function App() {
               newTilesArray[row][column] = 0;
               numberOfMoves++;
               newScore += value + value;
+              bonus += value + value;
             } else if (valueToTheLeft == 0) {
               newTilesArray[row][column - 1] = value;
               newTilesArray[row][column] = 0;
@@ -133,13 +133,15 @@ function App() {
     setMove("left");
 
     setTilesArray(newTilesArray);
+    /*     let bonusScore = newScore - score ; */
+    setBonus(bonus);
     setScore(newScore);
   }
 
   function moveRight() {
     let newScore = score;
     let newTilesArray = tilesArray.slice();
-
+    let bonus = 0;
     // Loop through all tiles mutiple times
     for (let index = 0; index < tilesXY - 1; index++) {
       // Loop thorugh rows
@@ -157,6 +159,7 @@ function App() {
               newTilesArray[row][column] = 0;
               numberOfMoves++;
               newScore += value + value;
+              bonus += value + value;
             } else if (valueToTheLeft == 0) {
               newTilesArray[row][column + 1] = value;
               newTilesArray[row][column] = 0;
@@ -168,12 +171,13 @@ function App() {
     }
     setMove("right");
     setTilesArray(newTilesArray);
+    setBonus(bonus);
     setScore(newScore);
   }
   function moveUp() {
     let newScore = score;
     let newTilesArray = tilesArray.slice();
-
+    let bonus = 0;
     for (let index = 0; index < tilesXY - 1; index++) {
       for (let column = 0; column < newTilesArray.length; column++) {
         for (let row = 1; row < newTilesArray[column].length; row++) {
@@ -188,6 +192,7 @@ function App() {
               newTilesArray[row][column] = 0;
               numberOfMoves++;
               newScore += value + value;
+              bonus += value + value;
             } else if (valueAbove === 0) {
               newTilesArray[row - 1][column] = value;
               newTilesArray[row][column] = 0;
@@ -201,13 +206,14 @@ function App() {
     setMove("up");
 
     setTilesArray(newTilesArray);
+    setBonus(bonus);
     setScore(newScore);
   }
 
   function moveDown() {
     let newScore = score;
     let newTilesArray = tilesArray.slice();
-
+    let bonus = 0;
     for (let index = 0; index < tilesXY - 1; index++) {
       for (let column = 0; column < newTilesArray.length; column++) {
         for (let row = tilesXY - 2; row >= 0; row--) {
@@ -222,6 +228,7 @@ function App() {
               newTilesArray[row][column] = 0;
               numberOfMoves++;
               newScore += value + value;
+              bonus += value + value;
             } else if (valueBelow === 0) {
               newTilesArray[row + 1][column] = value;
               newTilesArray[row][column] = 0;
@@ -234,10 +241,11 @@ function App() {
 
     setMove("down");
     setTilesArray(newTilesArray);
+    setBonus(bonus);
     setScore(newScore);
   }
   useEffect(() => {
-  /*   console.table("tilesArray");
+    /*   console.table("tilesArray");
     console.table(tilesArray);
     console.table("prevTilesArray");
     console.table(prevTilesArray); */
@@ -262,13 +270,11 @@ function App() {
   }, [width]);
 
   useEffect(() => {
-    console.dir("game ready: "+gameReady)
+    console.dir("game ready: " + gameReady);
     if (gameReady) {
       spawnTile();
       spawnTile();
-   
     }
-      
   }, [gameReady]);
 
   useEffect(() => {
@@ -297,7 +303,6 @@ function App() {
     setTilesArray(result);
     setPrevTilesArray(result);
     setGameReady(true);
-   
   }
 
   function placeTiles() {
@@ -406,6 +411,7 @@ function App() {
             <div className="topSection-display">
               <h2 className="scoreAndBestName">SCORE</h2>
               <h3 className="scoreAndBestNum">{score}</h3>
+              <Bonus bonusState={bonus} />
             </div>
             <button className="button" onClick={handleNewGame}>
               New
@@ -414,7 +420,7 @@ function App() {
           <div className="topSection-3">
             <div className="topSection-display">
               <h2 className="scoreAndBestName">SIZE</h2>
-              <h3 className="scoreAndBestNum">{tilesXY + "*"+tilesXY}</h3>
+              <h3 className="scoreAndBestNum">{tilesXY + "*" + tilesXY}</h3>
             </div>
             <button className="button">UNDO</button>
           </div>
@@ -446,8 +452,12 @@ function App() {
         className="slider"
         onChange={handleSliderChange}
       />
-      <p style={{textAlign:"center"}}>Use the arrow keys to controll the game. Have fun!</p>
-      <p style={{textAlign:"center"}}>You can also change the size of the board with the slider</p>
+      <p style={{ textAlign: "center" }}>
+        Use the arrow keys to controll the game. Have fun!
+      </p>
+      <p style={{ textAlign: "center" }}>
+        You can also change the size of the board with the slider
+      </p>
     </div>
   );
 }
