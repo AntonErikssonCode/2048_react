@@ -257,7 +257,7 @@ function App() {
   }, [tilesArray, tilesXY]);
 
   useEffect(() => {
-    setGameReady(false);
+    gameIsNotReady()
     if (bottomSectionRef.current) {
       setWidth(bottomSectionRef.current.offsetWidth / tilesXY);
     }
@@ -285,6 +285,12 @@ function App() {
   function resetScore() {
     setScore(0);
   }
+  function gameIsReady() {
+    setGameReady(true);
+  }
+  function gameIsNotReady() {
+    setGameReady(false)
+  }
 
   function generateArray() {
     const nTile = tilesXY * tilesXY;
@@ -302,7 +308,7 @@ function App() {
 
     setTilesArray(result);
     setPrevTilesArray(result);
-    setGameReady(true);
+    gameIsReady();
   }
 
   function placeTiles() {
@@ -393,7 +399,7 @@ function App() {
 
   // Init
   function initBoard() {
-    setGameReady(false);
+    gameIsNotReady()
     const newBoardBackground = Array(tilesXY * tilesXY).fill(0);
     setBoardBackground(newBoardBackground);
     generateArray();
