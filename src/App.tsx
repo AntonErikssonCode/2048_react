@@ -8,9 +8,9 @@ function App() {
   const tileRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Scores
-  const [best, setBest] = useState(0);
+
   const [score, setScore] = useState(0);
-  const [prevScore, setPrevScore] = useState(0);
+
   const [bonus, setBonus] = useState(0);
 
   // Tiles
@@ -19,6 +19,7 @@ function App() {
   const [moveDistance, setMoveDistance] = useState(0);
   const [width, setWidth] = useState(104);
   const [move, setMove] = useState("none");
+
   // Board
   const [tilesArray, setTilesArray] = useState<number[][]>([
     [0, 0, 0, 0],
@@ -42,6 +43,7 @@ function App() {
 
   // Game State
   const [gameReady, setGameReady] = useState(false);
+  const [undoAvailable, setUndoAvailable] = useState(true);
 
   // Handlers
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,9 +54,15 @@ function App() {
     console.dir("handle game clicked");
 
     initBoard();
+   
   };
   const undoMove = () => {
-    setTilesArray(prevTilesArray);
+    if (undoAvailable) {
+      setTilesArray(prevTilesArray);
+      let prevScore = score - bonus;
+      setScore(prevScore);
+      setUndoAvailable(false);
+    }
   };
 
   const isKeyPressedRef = useRef(false);
@@ -89,6 +97,7 @@ function App() {
         // Handle other cases if needed
         break;
     }
+    setUndoAvailable(true);
   };
 
   const handleKeyUp = () => {
