@@ -40,19 +40,29 @@ const valueSize: Record<string, Record<number, number>> = {
 };
 
 function Tile(props: Props) {
-  const [shrink, setShrink] = useState(false);
   let valueLength = props.value.toString().length;
   let fontSize = valueSize[props.tilesXY][valueLength];
 
+
+
+  const [tileAnimation, setTileAnimation] = useState("tile-animation-not-active");
+
   useEffect(() => {
-    // Trigger the shrinking effect once the component is mounted
-    setShrink(true);
-  }, []);
+    if (props.value > 0) {
+      setTileAnimation("animate-tile");
+      const timeout = setTimeout(() => {
+        setTileAnimation("tile-animation-not-active");
+      }, 300); // Wait for the duration of the transition in milliseconds
+
+      return () => clearTimeout(timeout);
+    }
+  }, [props.value]);
+
 
   if (props.value != 0) {
     return (
       <div
-        className={`boardTile${shrink ? " shrink" : ""}`}
+        className={`boardTile ${tileAnimation}`}
         style={{
           width: props.tileWidthHeight,
           height: props.tileWidthHeight,

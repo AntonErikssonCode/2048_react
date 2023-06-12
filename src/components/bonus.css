@@ -1,41 +1,37 @@
-
-.bonusContainer{
+.bonusContainer {
   position: relative;
+}
+.bonusContainer h4{
+ /*  font-size: 3rem; */
 }
 .bonus {
   position: absolute;
   top: -40px;
-  left: -12px;
+  left: -20px;
 }
 .bonus-animation-not-active {
- opacity: 0;
- 
- 
+  opacity: 0;
 }
 .animate-bonus {
-  animation: animateBonus 0.5s ease-in-out; /* Example animation, change it to your desired animation */
+  animation: animateBonus 0.3s ease-in; /* Example animation, change it to your desired animation */
 }
 
 @keyframes animateBonus {
   0% {
     transform: translateY(0px) scale(1);
     opacity: 1;
-   
   }
-  
+
   50% {
     transform: translateY(-10px) scale(1.1);
     opacity: 1;
-   
   }
   99% {
     transform: translateY(-30px) scale(1.2);
     opacity: 0.5;
-    
   }
   100% {
     transform: translateY(-35px) scale(1.2);
     opacity: 0;
-    
   }
 }

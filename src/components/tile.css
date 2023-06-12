@@ -19,11 +19,13 @@
 
 }
 
-.value{
-  
+
+.animate-tile{
+  animation: shrinkAnimation 0.3s ease-in-out;
+
 }
-.boardTile{
-  /* transition: all 1s ease-in; */
+.tile-animation-not-active{
+
 }
 @keyframes shrinkAnimation {
   0% {

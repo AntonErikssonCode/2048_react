@@ -420,7 +420,7 @@ function App() {
               <Bonus bonusState={bonus} />
             </div>
             <button className="button" onClick={handleNewGame}>
-              New
+              NEW
             </button>
           </div>
           <div className="topSection-3">
