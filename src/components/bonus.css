@@ -2,33 +2,34 @@
   position: relative;
 }
 .bonusContainer h4{
- /*  font-size: 3rem; */
+  font-size: 2rem;
+  color:#1b80f3d1 ;
 }
 .bonus {
   position: absolute;
-  top: -40px;
-  left: -20px;
+  top: -50px;
+  left: -30px;
 }
 .bonus-animation-not-active {
   opacity: 0;
 }
 .animate-bonus {
-  animation: animateBonus 0.3s ease-in; /* Example animation, change it to your desired animation */
+  animation: animateBonus 0.2s ease-in; /* Example animation, change it to your desired animation */
 }
 
 @keyframes animateBonus {
   0% {
     transform: translateY(0px) scale(1);
-    opacity: 1;
+    opacity: 0.8;
   }
 
   50% {
-    transform: translateY(-10px) scale(1.1);
-    opacity: 1;
+    transform: translateY(-5px) scale(1.1);
+    opacity: 0.8;
   }
   99% {
-    transform: translateY(-30px) scale(1.2);
-    opacity: 0.5;
+    transform: translateY(-20px) scale(1.2);
+    opacity: 0.2;
   }
   100% {
     transform: translateY(-35px) scale(1.2);

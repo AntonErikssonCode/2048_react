@@ -13,7 +13,7 @@ function Bonus(props: BonusProps) {
       setBonusClass("animate-bonus");
       const timeout = setTimeout(() => {
         setBonusClass("bonus-animation-not-active");
-      }, 300); // Wait for the duration of the transition in milliseconds
+      }, 200); // Wait for the duration of the transition in milliseconds
 
       return () => clearTimeout(timeout);
     }

@@ -53,6 +53,9 @@ function App() {
 
     initBoard();
   };
+  const undoMove = () => {
+    setTilesArray(prevTilesArray);
+  };
 
   const isKeyPressedRef = useRef(false);
 
@@ -64,7 +67,6 @@ function App() {
     }
 
     isKeyPressedRef.current = true;
-    setPrevTilesArray(tilesArray);
 
     switch (event.key) {
       case "ArrowUp":
@@ -106,6 +108,8 @@ function App() {
   function moveLeft() {
     let newScore = score;
     let newTilesArray = tilesArray.slice();
+    let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
+
     let bonus = 0;
     for (let index = 0; index < tilesXY - 1; index++) {
       for (let row = 0; row < newTilesArray.length; row++) {
@@ -133,7 +137,7 @@ function App() {
     setMove("left");
 
     setTilesArray(newTilesArray);
-    /*     let bonusScore = newScore - score ; */
+    setPrevTilesArray(newPrevTilesArray);
     setBonus(bonus);
     setScore(newScore);
   }
@@ -141,6 +145,8 @@ function App() {
   function moveRight() {
     let newScore = score;
     let newTilesArray = tilesArray.slice();
+    let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
+
     let bonus = 0;
     // Loop through all tiles mutiple times
     for (let index = 0; index < tilesXY - 1; index++) {
@@ -171,12 +177,15 @@ function App() {
     }
     setMove("right");
     setTilesArray(newTilesArray);
+    setPrevTilesArray(newPrevTilesArray);
+
     setBonus(bonus);
     setScore(newScore);
   }
   function moveUp() {
     let newScore = score;
     let newTilesArray = tilesArray.slice();
+    let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
     let bonus = 0;
     for (let index = 0; index < tilesXY - 1; index++) {
       for (let column = 0; column < newTilesArray.length; column++) {
@@ -206,6 +215,8 @@ function App() {
     setMove("up");
 
     setTilesArray(newTilesArray);
+    setPrevTilesArray(newPrevTilesArray);
+
     setBonus(bonus);
     setScore(newScore);
   }
@@ -213,6 +224,8 @@ function App() {
   function moveDown() {
     let newScore = score;
     let newTilesArray = tilesArray.slice();
+    let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
+
     let bonus = 0;
     for (let index = 0; index < tilesXY - 1; index++) {
       for (let column = 0; column < newTilesArray.length; column++) {
@@ -241,14 +254,12 @@ function App() {
 
     setMove("down");
     setTilesArray(newTilesArray);
+    setPrevTilesArray(newPrevTilesArray);
+
     setBonus(bonus);
     setScore(newScore);
   }
   useEffect(() => {
-    /*   console.table("tilesArray");
-    console.table(tilesArray);
-    console.table("prevTilesArray");
-    console.table(prevTilesArray); */
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
@@ -257,7 +268,7 @@ function App() {
   }, [tilesArray, tilesXY]);
 
   useEffect(() => {
-    gameIsNotReady()
+    gameIsNotReady();
     if (bottomSectionRef.current) {
       setWidth(bottomSectionRef.current.offsetWidth / tilesXY);
     }
@@ -279,7 +290,11 @@ function App() {
 
   useEffect(() => {
     placeTiles();
-  }, [tilesArray]);
+    console.dir("tilesArray_______________________");
+    console.table(tilesArray);
+    console.dir("prevTilesArray_______________________");
+    console.table(prevTilesArray);
+  }, [tilesArray, prevTilesArray]);
 
   // Functions
   function resetScore() {
@@ -289,7 +304,7 @@ function App() {
     setGameReady(true);
   }
   function gameIsNotReady() {
-    setGameReady(false)
+    setGameReady(false);
   }
 
   function generateArray() {
@@ -308,7 +323,7 @@ function App() {
 
     setTilesArray(result);
     setPrevTilesArray(result);
-    gameIsReady();
+    console.dir("GENERATE BOARD");
   }
 
   function placeTiles() {
@@ -399,11 +414,15 @@ function App() {
 
   // Init
   function initBoard() {
-    gameIsNotReady()
+    if (gameReady) {
+      setGameReady(false);
+    }
+
     const newBoardBackground = Array(tilesXY * tilesXY).fill(0);
     setBoardBackground(newBoardBackground);
     generateArray();
     resetScore();
+    gameIsReady();
   }
 
   return (
@@ -428,7 +447,9 @@ function App() {
               <h2 className="scoreAndBestName">SIZE</h2>
               <h3 className="scoreAndBestNum">{tilesXY + "*" + tilesXY}</h3>
             </div>
-            <button className="button">UNDO</button>
+            <button className="button" onClick={undoMove}>
+              UNDO
+            </button>
           </div>
         </div>
         <h4>Join the number and get to the 2048 tile!</h4>
