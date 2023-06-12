@@ -5,6 +5,8 @@
   align-items: center;
   border-radius: 0.2rem;
   position: absolute;
+  transition: all 0.3s;
+ 
 
 }
 .boardInnerTile{
@@ -38,7 +40,8 @@
     transform: scale(1); /* Return to original size */
   }
 }
-
+/* 
 .boardTile.shrink {
   animation: shrinkAnimation 0.3s ease-in-out;
 }
+ */

@@ -19,7 +19,7 @@ function App() {
   const [moveDistance, setMoveDistance] = useState(0);
   const [width, setWidth] = useState(104);
   const [move, setMove] = useState("none");
-
+  const [animationArray, setAimationArray] = useState([]);
   // Board
   const [tilesArray, setTilesArray] = useState<number[][]>([
     [0, 0, 0, 0],
@@ -42,16 +42,13 @@ function App() {
   const [gameReady, setGameReady] = useState(false);
   const [undoAvailable, setUndoAvailable] = useState(true);
 
-
   // Handlers
-  
 
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTilesXY(parseInt(event.target.value));
   };
 
   const handleNewGame = () => {
-
     if (tilesXY == 4) {
       setTilesXY(5);
     } else {
@@ -114,13 +111,13 @@ function App() {
       document.removeEventListener("keyup", handleKeyUp);
     };
   }, [tilesArray]);
-
+  /* 
   function moveLeft() {
     let newScore = score;
     let newTilesArray = tilesArray.slice();
     let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
-
     let bonus = 0;
+    let animateArray:any = [];
     for (let index = 0; index < tilesXY - 1; index++) {
       for (let row = 0; row < newTilesArray.length; row++) {
         for (let column = 0; column < newTilesArray[row].length; column++) {
@@ -135,22 +132,88 @@ function App() {
               numberOfMoves++;
               newScore += value + value;
               bonus += value + value;
-            } else if (valueToTheLeft == 0) {
+            } else if (valueToTheLeft == 0 && value != 0) {
               newTilesArray[row][column - 1] = value;
               newTilesArray[row][column] = 0;
               numberOfMoves++;
             }
           }
+          animateArray.push({[key]:numberOfMoves })
+
         }
       }
     }
     setMove("left");
+    console.dir(animateArray)
+    setTilesArray(newTilesArray);
+    setPrevTilesArray(newPrevTilesArray);
+    setBonus(bonus);
+    setScore(newScore);
+  } */
+  function moveLeft() {
+    let newScore = score;
+    let newTilesArray = tilesArray.slice();
+    let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
+    let bonus = 0;
+    let animateArray: any = [];
 
+    for (let row = 0; row < newTilesArray.length; row++) {
+      let numberOfMoves = 0;
+      let zerosArray = [];
+
+      for (let column = 1; column < newTilesArray[row].length; column++) {
+        let value = newTilesArray[row][column];
+        let valueToTheLeft = newTilesArray[row][column - 1];
+        const pos = { row: row, column: column };
+        const key = row + ":" + column;
+        let addedNum= false;
+        if (value != 0) {
+          let moveSteps = 0;
+          let tempColumn = column - 1;
+
+          while (tempColumn >= 0 && newTilesArray[row][tempColumn] == 0) {
+            moveSteps++;
+            tempColumn--;
+          }
+
+          if (valueToTheLeft == value) {
+            newTilesArray[row][column - moveSteps - 1] = value + value;
+            newTilesArray[row][column] = 0;
+            numberOfMoves++;
+            newScore += value + value;
+            bonus += value + value;
+            addedNum = true;
+          } else if (moveSteps > 0) {
+            newTilesArray[row][column - moveSteps] = value;
+            newTilesArray[row][column] = 0;
+            numberOfMoves++;
+          }
+
+          if (moveSteps > 0 || addedNum) {
+            if(addedNum){
+              zerosArray.push({ key: key, moveSteps: 1, pos: pos });
+            }
+            else{
+              zerosArray.push({ key: key, moveSteps: moveSteps, pos: pos });
+
+            }
+          }
+        }
+      }
+
+      animateArray = animateArray.concat(zerosArray);
+    }
+
+    setMove("left");
+    console.dir(animateArray);
+    setAimationArray(animateArray);
     setTilesArray(newTilesArray);
     setPrevTilesArray(newPrevTilesArray);
     setBonus(bonus);
     setScore(newScore);
   }
+
+  /* 
 
   function moveRight() {
     let newScore = score;
@@ -176,7 +239,7 @@ function App() {
               numberOfMoves++;
               newScore += value + value;
               bonus += value + value;
-            } else if (valueToTheLeft == 0) {
+            } else if (valueToTheLeft == 0  && value != 0) {
               newTilesArray[row][column + 1] = value;
               newTilesArray[row][column] = 0;
               numberOfMoves++;
@@ -212,7 +275,7 @@ function App() {
               numberOfMoves++;
               newScore += value + value;
               bonus += value + value;
-            } else if (valueAbove === 0) {
+            } else if (valueAbove === 0  && value != 0) {
               newTilesArray[row - 1][column] = value;
               newTilesArray[row][column] = 0;
               numberOfMoves++;
@@ -252,7 +315,7 @@ function App() {
               numberOfMoves++;
               newScore += value + value;
               bonus += value + value;
-            } else if (valueBelow === 0) {
+            } else if (valueBelow === 0  && value != 0) {
               newTilesArray[row + 1][column] = value;
               newTilesArray[row][column] = 0;
               numberOfMoves++;
@@ -269,6 +332,247 @@ function App() {
     setBonus(bonus);
     setScore(newScore);
   }
+ */
+  function moveRight() {
+    let newScore = score;
+    let newTilesArray = tilesArray.slice();
+    let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
+
+    let bonus = 0;
+    let animateArray: any = [];
+
+    for (let row = 0; row < newTilesArray.length; row++) {
+      let numberOfMoves = 0;
+      let zerosArray = [];
+
+      for (let column = newTilesArray[row].length - 2; column >= 0; column--) {
+        let value = newTilesArray[row][column];
+        let valueToTheRight = newTilesArray[row][column + 1];
+        const key = row + ":" + column;
+
+        if (value != 0) {
+          let moveSteps = 0;
+          let tempColumn = column + 1;
+
+          while (
+            tempColumn < newTilesArray[row].length &&
+            newTilesArray[row][tempColumn] == 0
+          ) {
+            moveSteps++;
+            tempColumn++;
+          }
+
+          if (valueToTheRight == value) {
+            newTilesArray[row][column + moveSteps + 1] = value + value;
+            newTilesArray[row][column] = 0;
+            numberOfMoves++;
+            newScore += value + value;
+            bonus += value + value;
+          } else if (moveSteps > 0) {
+            newTilesArray[row][column + moveSteps] = value;
+            newTilesArray[row][column] = 0;
+            numberOfMoves++;
+          }
+
+          if (moveSteps > 0) {
+            zerosArray.push({ moveSteps: moveSteps });
+          }
+        }
+      }
+
+      animateArray = animateArray.concat(zerosArray);
+    }
+
+    setMove("right");
+    console.dir(animateArray);
+    setTilesArray(newTilesArray);
+    setPrevTilesArray(newPrevTilesArray);
+    setBonus(bonus);
+    setScore(newScore);
+  }
+
+  function moveUp() {
+    let newScore = score;
+    let newTilesArray = tilesArray.slice();
+    let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
+    let bonus = 0;
+    let animateArray: any = [];
+
+    for (let column = 0; column < newTilesArray.length; column++) {
+      let numberOfMoves = 0;
+      let zerosArray = [];
+
+      for (let row = 1; row < newTilesArray[column].length; row++) {
+        let value = newTilesArray[row][column];
+        let valueAbove = newTilesArray[row - 1][column];
+        const key = row + ":" + column;
+
+        if (value != 0) {
+          let moveSteps = 0;
+          let tempRow = row - 1;
+
+          while (tempRow >= 0 && newTilesArray[tempRow][column] == 0) {
+            moveSteps++;
+            tempRow--;
+          }
+
+          if (valueAbove === value) {
+            newTilesArray[row - moveSteps - 1][column] = value + value;
+            newTilesArray[row][column] = 0;
+            numberOfMoves++;
+            newScore += value + value;
+            bonus += value + value;
+          } else if (moveSteps > 0) {
+            newTilesArray[row - moveSteps][column] = value;
+            newTilesArray[row][column] = 0;
+            numberOfMoves++;
+          }
+
+          if (moveSteps > 0) {
+            zerosArray.push({ moveSteps: moveSteps });
+          }
+        }
+      }
+
+      animateArray = animateArray.concat(zerosArray);
+    }
+
+    setMove("up");
+    console.dir(animateArray);
+    setTilesArray(newTilesArray);
+    setPrevTilesArray(newPrevTilesArray);
+    setBonus(bonus);
+    setScore(newScore);
+  }
+
+  function moveDown() {
+    let newScore = score;
+    let newTilesArray = tilesArray.slice();
+    let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
+    let bonus = 0;
+    let animateArray: any = [];
+
+    for (let column = 0; column < newTilesArray.length; column++) {
+      let numberOfMoves = 0;
+      let zerosArray = [];
+
+      for (let row = newTilesArray[column].length - 2; row >= 0; row--) {
+        let value = newTilesArray[row][column];
+        let valueBelow = newTilesArray[row + 1][column];
+        const key = row + ":" + column;
+
+        if (value != 0) {
+          let moveSteps = 0;
+          let tempRow = row + 1;
+
+          while (
+            tempRow < newTilesArray[column].length &&
+            newTilesArray[tempRow][column] == 0
+          ) {
+            moveSteps++;
+            tempRow++;
+          }
+
+          if (valueBelow === value) {
+            newTilesArray[row + moveSteps + 1][column] = value + value;
+            newTilesArray[row][column] = 0;
+            numberOfMoves++;
+            newScore += value + value;
+            bonus += value + value;
+          } else if (moveSteps > 0) {
+            newTilesArray[row + moveSteps][column] = value;
+            newTilesArray[row][column] = 0;
+            numberOfMoves++;
+          }
+
+          if (moveSteps > 0) {
+            zerosArray.push({ moveSteps: moveSteps });
+          }
+        }
+      }
+
+      animateArray = animateArray.concat(zerosArray);
+    }
+
+    setMove("down");
+    console.dir(animateArray);
+    setTilesArray(newTilesArray);
+    setPrevTilesArray(newPrevTilesArray);
+    setBonus(bonus);
+    setScore(newScore);
+  }
+
+  let timeoutId: any;
+
+  function debounce(func: any, delay: any) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(func, delay);
+  }
+
+  function animateTiles() {
+    const tiles: (JSX.Element | null)[] = [];
+
+    // Iterate through the tilesArray
+    for (let y = 0; y < prevTilesArray.length; y++) {
+      for (let x = 0; x < prevTilesArray[y].length; x++) {
+        const value = prevTilesArray[y][x];
+        const key = y + ":" + x;
+        let animationObject: any;
+        let modifier = 0;
+        let animationStyle = "none";
+
+        
+        // Check if the value is greater than 0
+        if (value > 0) {
+          if (animationArray.length > 0) {
+            animationArray.forEach((element: { key?: string, moveSteps?: string }) => {
+             /*  console.dir("elementKey: " + element.key)
+              console.dir("key: " + key) */
+              if (element.key == key) {
+                animationObject = element;
+                console.dir(animationObject)
+                modifier = 104 *  animationObject.moveSteps ;
+                animationStyle = `translateX(-${modifier}px)`;
+                /* switch (move) {
+                  case "left":
+                    animationStyle = `translateX(-${modifier}px)`;
+                    
+                    
+                    break;
+                
+                  default:
+                    break;
+                } */
+              }
+            });
+          }
+          const tile = (
+            <div
+              key={y + ":" + x}
+              ref={(ref) => (tileRefs.current[y * tilesXY + x] = ref)}
+            >
+              <Tile
+                value={value}
+                tileWidthHeight={width}
+                tilesXY={tilesXY}
+                moveDistance={moveDistance}
+                x={x}
+                y={y}
+                transform={animationStyle}
+              />
+            </div>
+          );
+          tiles.push(tile);
+        }
+      }
+    }
+
+    // Update the state with the generated elements
+    setTilesElements(tiles);
+/*     setTimeout(placeTiles, 1000); */
+    debounce(placeTiles, 500);
+  }
+
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
 
@@ -299,11 +603,13 @@ function App() {
   }, [gameReady]);
 
   useEffect(() => {
-    placeTiles();
-    console.dir("tilesArray_______________________");
+    animateTiles();
+/*     debounce(animateTiles, 500); */
+  /*   debounce(placeTiles, 300) */
+    /*     console.dir("tilesArray_______________________");
     console.table(tilesArray);
     console.dir("prevTilesArray_______________________");
-    console.table(prevTilesArray);
+    console.table(prevTilesArray); */
   }, [tilesArray, prevTilesArray]);
 
   // Functions
@@ -359,6 +665,7 @@ function App() {
                 moveDistance={moveDistance}
                 x={x}
                 y={y}
+                transform="none"
               />
             </div>
           );
@@ -419,7 +726,7 @@ function App() {
       setTilesArray(updatedTilesArray);
       console.log("Spawned tile");
     }
-    placeTiles();
+    /* animateTiles(); */
   }
 
   // Init
@@ -435,7 +742,6 @@ function App() {
   return (
     <div>
       <div className="App">
-   
         <div className="topSection">
           <div className="topSection-1">
             <h1 className="title">2048</h1>

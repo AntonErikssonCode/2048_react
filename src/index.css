@@ -7,7 +7,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
   width: 100vw;
-  background-color: azure;
+  background-color: rgba(25, 132, 255, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;

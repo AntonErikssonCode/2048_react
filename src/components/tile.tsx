@@ -8,6 +8,7 @@ interface Props {
   moveDistance: number;
   x: number;
   y: number;
+  transform: string;
 }
 
 const colors: { [key: string]: string } = {
@@ -68,6 +69,7 @@ function Tile(props: Props) {
           height: props.tileWidthHeight,
           left: props.moveDistance * props.tilesXY * props.x,
           top: props.moveDistance * props.tilesXY * props.y,
+          transform: props.transform,
         }}
       >
         <div
