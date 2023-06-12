@@ -2,7 +2,7 @@
 
 .App {
   font-family: "Poppins", sans-serif;
-
+  box-shadow: 8px 8px 10px rgba(0, 0, 0, 0.5);
   text-align: center;
   background-color: rgb(66, 66, 66);
   width: 416px;
@@ -107,6 +107,7 @@
   border: none;
   outline: none;
   cursor: pointer;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
   transition: all 0.1s;
 }
 
@@ -124,7 +125,32 @@ h4 {
   width: 90%;
   margin-left: 5%;
   margin-top: 1rem;
+  background-color: rgb(43, 43, 43);
+  border-radius: 0.5rem;
+  height: 0.7rem;
+  appearance: none; /* Remove default styling */
 }
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background-color: rgba(25, 132, 255, 1);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background-color: rgba(25, 132, 255, 1);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
 .bottomSection {
   height: 416px;
   width: 416px;
