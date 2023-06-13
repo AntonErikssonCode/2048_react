@@ -418,7 +418,9 @@ function App() {
       for (let row = 1; row < newTilesArray[column].length; row++) {
         let value = newTilesArray[row][column];
         let valueAbove = newTilesArray[row - 1][column];
+        const pos = { row: row, column: column };
         const key = row + ":" + column;
+        let addedNum = false;
 
         if (value != 0) {
           let moveSteps = 0;
@@ -435,14 +437,19 @@ function App() {
             numberOfMoves++;
             newScore += value + value;
             bonus += value + value;
+            addedNum = true;
           } else if (moveSteps > 0) {
             newTilesArray[row - moveSteps][column] = value;
             newTilesArray[row][column] = 0;
             numberOfMoves++;
           }
 
-          if (moveSteps > 0) {
-            zerosArray.push({ moveSteps: moveSteps });
+          if (moveSteps > 0 || addedNum) {
+            if (addedNum) {
+              zerosArray.push({ key: key, moveSteps: 1, pos: pos });
+            } else {
+              zerosArray.push({ key: key, moveSteps: moveSteps, pos: pos });
+            }
           }
         }
       }
@@ -452,6 +459,7 @@ function App() {
 
     setMove("up");
     console.dir(animateArray);
+    setAimationArray(animateArray);
     setTilesArray(newTilesArray);
     setPrevTilesArray(newPrevTilesArray);
     setBonus(bonus);
@@ -472,7 +480,9 @@ function App() {
       for (let row = newTilesArray[column].length - 2; row >= 0; row--) {
         let value = newTilesArray[row][column];
         let valueBelow = newTilesArray[row + 1][column];
+        const pos = { row: row, column: column };
         const key = row + ":" + column;
+        let addedNum = false;
 
         if (value != 0) {
           let moveSteps = 0;
@@ -492,23 +502,28 @@ function App() {
             numberOfMoves++;
             newScore += value + value;
             bonus += value + value;
+            addedNum = true;
           } else if (moveSteps > 0) {
             newTilesArray[row + moveSteps][column] = value;
             newTilesArray[row][column] = 0;
             numberOfMoves++;
           }
 
-          if (moveSteps > 0) {
-            zerosArray.push({ moveSteps: moveSteps });
+          if (moveSteps > 0 || addedNum) {
+            if (addedNum) {
+              zerosArray.push({ key: key, moveSteps: 1, pos: pos });
+            } else {
+              zerosArray.push({ key: key, moveSteps: moveSteps, pos: pos });
+            }
           }
         }
       }
 
       animateArray = animateArray.concat(zerosArray);
     }
-
     setMove("down");
     console.dir(animateArray);
+    setAimationArray(animateArray);
     setTilesArray(newTilesArray);
     setPrevTilesArray(newPrevTilesArray);
     setBonus(bonus);
@@ -592,7 +607,7 @@ function App() {
     // Update the state with the generated elements
     setTilesElements(tiles);
     /*     setTimeout(placeTiles, 1000); */
-    debounce(placeTiles, 500);
+    debounce(placeTiles, 200);
   }
 
   useEffect(() => {
