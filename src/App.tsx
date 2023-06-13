@@ -41,6 +41,7 @@ function App() {
   // Game State
   const [gameReady, setGameReady] = useState(false);
   const [undoAvailable, setUndoAvailable] = useState(true);
+  const [movesDone, setMovesDone]= useState<string []>([]);
 
   // Handlers
 
@@ -77,19 +78,19 @@ function App() {
     switch (event.key) {
       case "ArrowUp":
         moveUp();
-        spawnTile();
+        spawnTile("up");
         break;
       case "ArrowDown":
         moveDown();
-        spawnTile();
+        spawnTile("down");
         break;
       case "ArrowLeft":
         moveLeft();
-        spawnTile();
+        spawnTile("left");
         break;
       case "ArrowRight":
         moveRight();
-        spawnTile();
+        spawnTile("right");
         break;
       default:
         // Handle other cases if needed
@@ -606,8 +607,9 @@ function App() {
 
     // Update the state with the generated elements
     setTilesElements(tiles);
+    debounce(placeTiles, 300);
     /*     setTimeout(placeTiles, 1000); */
-    debounce(placeTiles, 200);
+    /*  debounce(placeTiles, 150); */
   }
 
   useEffect(() => {
@@ -634,13 +636,14 @@ function App() {
   useEffect(() => {
     console.dir("game ready: " + gameReady);
     if (gameReady) {
-      spawnTile();
-      spawnTile();
+      spawnTile("none");
+      spawnTile("none");
     }
   }, [gameReady]);
 
   useEffect(() => {
     animateTiles();
+
     /*     debounce(animateTiles, 500); */
     /*   debounce(placeTiles, 300) */
     /*     console.dir("tilesArray_______________________");
@@ -721,7 +724,7 @@ function App() {
     return number;
   }
 
-  function spawnTile() {
+  function spawnTile(moveDirection:string) {
     if (tilesArray && tilesArray.length == tilesXY) {
       const emptyPositions: { x: number; y: number }[] = [];
 
@@ -742,7 +745,8 @@ function App() {
           }
         }
       }
-
+     
+      console.dir(moveDirection)
       if (emptyPositions.length === 0) {
         console.info("No unique positions available");
         return;

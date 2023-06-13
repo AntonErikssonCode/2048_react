@@ -23,7 +23,7 @@
 
 
 .animate-tile{
-  animation: shrinkAnimation 0.3s ease-in-out;
+  animation: shrinkAnimation 0.2s ease-in-out;
 
 }
 .tile-animation-not-active{
