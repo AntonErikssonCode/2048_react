@@ -150,68 +150,6 @@ function App() {
     setBonus(bonus);
     setScore(newScore);
   } */
-  function moveLeft() {
-    let newScore = score;
-    let newTilesArray = tilesArray.slice();
-    let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
-    let bonus = 0;
-    let animateArray: any = [];
-
-    for (let row = 0; row < newTilesArray.length; row++) {
-      let numberOfMoves = 0;
-      let zerosArray = [];
-
-      for (let column = 1; column < newTilesArray[row].length; column++) {
-        let value = newTilesArray[row][column];
-        let valueToTheLeft = newTilesArray[row][column - 1];
-        const pos = { row: row, column: column };
-        const key = row + ":" + column;
-        let addedNum= false;
-        if (value != 0) {
-          let moveSteps = 0;
-          let tempColumn = column - 1;
-
-          while (tempColumn >= 0 && newTilesArray[row][tempColumn] == 0) {
-            moveSteps++;
-            tempColumn--;
-          }
-
-          if (valueToTheLeft == value) {
-            newTilesArray[row][column - moveSteps - 1] = value + value;
-            newTilesArray[row][column] = 0;
-            numberOfMoves++;
-            newScore += value + value;
-            bonus += value + value;
-            addedNum = true;
-          } else if (moveSteps > 0) {
-            newTilesArray[row][column - moveSteps] = value;
-            newTilesArray[row][column] = 0;
-            numberOfMoves++;
-          }
-
-          if (moveSteps > 0 || addedNum) {
-            if(addedNum){
-              zerosArray.push({ key: key, moveSteps: 1, pos: pos });
-            }
-            else{
-              zerosArray.push({ key: key, moveSteps: moveSteps, pos: pos });
-
-            }
-          }
-        }
-      }
-
-      animateArray = animateArray.concat(zerosArray);
-    }
-
-    setMove("left");
-    console.dir(animateArray);
-    setAimationArray(animateArray);
-    setTilesArray(newTilesArray);
-    setPrevTilesArray(newPrevTilesArray);
-    setBonus(bonus);
-    setScore(newScore);
-  }
 
   /* 
 
@@ -333,11 +271,72 @@ function App() {
     setScore(newScore);
   }
  */
+  function moveLeft() {
+    let newScore = score;
+    let newTilesArray = tilesArray.slice();
+    let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
+    let bonus = 0;
+    let animateArray: any = [];
+
+    for (let row = 0; row < newTilesArray.length; row++) {
+      let numberOfMoves = 0;
+      let zerosArray = [];
+
+      for (let column = 1; column < newTilesArray[row].length; column++) {
+        let value = newTilesArray[row][column];
+        let valueToTheLeft = newTilesArray[row][column - 1];
+        const pos = { row: row, column: column };
+        const key = row + ":" + column;
+        let addedNum = false;
+
+        if (value != 0) {
+          let moveSteps = 0;
+          let tempColumn = column - 1;
+
+          while (tempColumn >= 0 && newTilesArray[row][tempColumn] == 0) {
+            moveSteps++;
+            tempColumn--;
+          }
+
+          if (valueToTheLeft == value) {
+            newTilesArray[row][column - moveSteps - 1] = value + value;
+            newTilesArray[row][column] = 0;
+            numberOfMoves++;
+            newScore += value + value;
+            bonus += value + value;
+            addedNum = true;
+          } else if (moveSteps > 0) {
+            newTilesArray[row][column - moveSteps] = value;
+            newTilesArray[row][column] = 0;
+            numberOfMoves++;
+          }
+
+          if (moveSteps > 0 || addedNum) {
+            if (addedNum) {
+              zerosArray.push({ key: key, moveSteps: 1, pos: pos });
+            } else {
+              zerosArray.push({ key: key, moveSteps: moveSteps, pos: pos });
+            }
+          }
+        }
+      }
+
+      animateArray = animateArray.concat(zerosArray);
+    }
+
+    setMove("left");
+    console.dir(animateArray);
+    setAimationArray(animateArray);
+    setTilesArray(newTilesArray);
+    setPrevTilesArray(newPrevTilesArray);
+    setBonus(bonus);
+    setScore(newScore);
+  }
+
   function moveRight() {
     let newScore = score;
     let newTilesArray = tilesArray.slice();
     let newPrevTilesArray = JSON.parse(JSON.stringify(tilesArray)); // Create a deep copy
-
     let bonus = 0;
     let animateArray: any = [];
 
@@ -348,7 +347,9 @@ function App() {
       for (let column = newTilesArray[row].length - 2; column >= 0; column--) {
         let value = newTilesArray[row][column];
         let valueToTheRight = newTilesArray[row][column + 1];
+        const pos = { row: row, column: column };
         const key = row + ":" + column;
+        let addedNum = false;
 
         if (value != 0) {
           let moveSteps = 0;
@@ -368,23 +369,35 @@ function App() {
             numberOfMoves++;
             newScore += value + value;
             bonus += value + value;
+            addedNum = true;
           } else if (moveSteps > 0) {
             newTilesArray[row][column + moveSteps] = value;
             newTilesArray[row][column] = 0;
             numberOfMoves++;
           }
 
-          if (moveSteps > 0) {
-            zerosArray.push({ moveSteps: moveSteps });
+          if (moveSteps > 0 || addedNum) {
+            if (addedNum) {
+              zerosArray.push({ key: key, moveSteps: 1, pos: pos });
+            } else {
+              zerosArray.push({ key: key, moveSteps: moveSteps, pos: pos });
+            }
           }
         }
       }
 
       animateArray = animateArray.concat(zerosArray);
     }
-
+    /* 
     setMove("right");
     console.dir(animateArray);
+    setTilesArray(newTilesArray);
+    setPrevTilesArray(newPrevTilesArray);
+    setBonus(bonus);
+    setScore(newScore); */
+    setMove("right");
+    console.dir(animateArray);
+    setAimationArray(animateArray);
     setTilesArray(newTilesArray);
     setPrevTilesArray(newPrevTilesArray);
     setBonus(bonus);
@@ -521,30 +534,39 @@ function App() {
         let modifier = 0;
         let animationStyle = "none";
 
-        
         // Check if the value is greater than 0
         if (value > 0) {
           if (animationArray.length > 0) {
-            animationArray.forEach((element: { key?: string, moveSteps?: string }) => {
-             /*  console.dir("elementKey: " + element.key)
+            animationArray.forEach(
+              (element: { key?: string; moveSteps?: string }) => {
+                /*  console.dir("elementKey: " + element.key)
               console.dir("key: " + key) */
-              if (element.key == key) {
-                animationObject = element;
-                console.dir(animationObject)
-                modifier = 104 *  animationObject.moveSteps ;
-                animationStyle = `translateX(-${modifier}px)`;
-                /* switch (move) {
-                  case "left":
-                    animationStyle = `translateX(-${modifier}px)`;
-                    
-                    
-                    break;
-                
-                  default:
-                    break;
-                } */
+                if (element.key == key) {
+                  animationObject = element;
+                  console.dir(animationObject);
+                  modifier = width * animationObject.moveSteps;
+                  switch (move) {
+                    case "left":
+                      animationStyle = `translateX(-${modifier}px)`;
+
+                      break;
+                    case "right":
+                      animationStyle = `translateX(${modifier}px)`;
+                      break;
+                    case "up":
+                      animationStyle = `translateY(-${modifier}px)`;
+
+                      break;
+                    case "down":
+                      animationStyle = `translateY(${modifier}px)`;
+                      break;
+
+                    default:
+                      break;
+                  }
+                }
               }
-            });
+            );
           }
           const tile = (
             <div
@@ -569,7 +591,7 @@ function App() {
 
     // Update the state with the generated elements
     setTilesElements(tiles);
-/*     setTimeout(placeTiles, 1000); */
+    /*     setTimeout(placeTiles, 1000); */
     debounce(placeTiles, 500);
   }
 
@@ -604,8 +626,8 @@ function App() {
 
   useEffect(() => {
     animateTiles();
-/*     debounce(animateTiles, 500); */
-  /*   debounce(placeTiles, 300) */
+    /*     debounce(animateTiles, 500); */
+    /*   debounce(placeTiles, 300) */
     /*     console.dir("tilesArray_______________________");
     console.table(tilesArray);
     console.dir("prevTilesArray_______________________");
